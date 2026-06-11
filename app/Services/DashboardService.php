@@ -352,8 +352,8 @@ public function getDailyTrend(User $user): array
         // ─── 1. Financial Summary (bulan target) ─────────────────────────────
         $totalIncome = IncomeEntry::where('user_id', $user->id)
             ->where('verified_status', 'verified')
-            ->whereYear('created_at', $year)
-            ->whereMonth('created_at', $month)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
             ->sum('amount');
 
         $totalExpense = Expense::where('user_id', $user->id)
@@ -368,8 +368,8 @@ public function getDailyTrend(User $user): array
         // ─── 2. Bulan sebelumnya (MoM comparison) ────────────────────────────
         $prevIncome = IncomeEntry::where('user_id', $user->id)
             ->where('verified_status', 'verified')
-            ->whereYear('created_at', $prevPeriod->year)
-            ->whereMonth('created_at', $prevPeriod->month)
+            ->whereYear('date', $prevPeriod->year)
+            ->whereMonth('date', $prevPeriod->month)
             ->sum('amount');
 
         $prevExpense = Expense::where('user_id', $user->id)
