@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Services\DashboardService;
 use App\Services\SurviveModeService;
 use Illuminate\Http\Request;
@@ -14,7 +15,25 @@ class DashboardController extends Controller
         private SurviveModeService $surviveModeService,
     ) {}
 
+    public function report(Request $request): View
+{
+    $user = auth()->user();
 
+    $month = (int) $request->get('month', now()->month);
+    $year  = (int) $request->get('year', now()->year);
+
+    $report = $this->dashboardService->getReportData(
+        $user,
+        $month,
+        $year
+    );
+
+    return view('dashboard.report', compact(
+        'report',
+        'month',
+        'year'
+    ));
+}
     public function index(): View
     {
         $user = auth()->user();

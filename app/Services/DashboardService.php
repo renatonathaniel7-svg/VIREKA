@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
 use App\Models\Budget;
 use App\Models\Category;
 use App\Models\Expense;
