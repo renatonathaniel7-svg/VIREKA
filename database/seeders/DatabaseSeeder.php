@@ -4,28 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-/**
- * DatabaseSeeder — Master orchestrator untuk semua seeder FinTrack.
- *
- * URUTAN SEEDING SANGAT PENTING karena foreign key dependency:
- *
- * Dependency chain:
- * badges           (no deps)
- * income_sources   (no deps)
- * categories       (no deps)
- * users            (no deps)
- *   └→ budgets     (needs: users, categories)
- *   └→ income_entries (needs: users, income_sources)
- *   └→ expenses    (needs: users, categories)
- *   └→ verifications (needs: users, income_entries, expenses)
- *   └→ investment_entries (needs: users)
- *   └→ withdrawal_requests (needs: users, investment_entries)
- *   └→ appreciation_logs (needs: users)
- *   └→ user_badges (needs: users, badges)
- *
- * Jalankan dengan: php artisan db:seed
- * Atau fresh:      php artisan migrate:fresh --seed
- */
 class DatabaseSeeder extends Seeder
 {
     public function run(): void

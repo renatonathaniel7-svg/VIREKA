@@ -8,20 +8,6 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
-/**
- * Seeder: ExpenseSeeder
- *
- * Min 50 rows per kategori type (want/need/saving/investment).
- * Total target: ~200+ rows pengeluaran.
- *
- * Nominal realistis Indonesia:
- * - want: 10.000 - 300.000/transaksi
- * - need: 15.000 - 500.000/transaksi
- * - saving: 100.000 - 1.000.000 (alokasi)
- * - investment: 200.000 - 2.000.000 (alokasi)
- *
- * Mix status: ~70% verified, 30% unverified/pending/draft
- */
 class ExpenseSeeder extends Seeder
 {
     // Deskripsi realistis per kategori
@@ -66,9 +52,7 @@ class ExpenseSeeder extends Seeder
 
         $allExpenses = [];
 
-        // Target: 50 expense per type per total (bukan per user)
-        // Dengan 5 user, masing2 dapat ~10 expense per type
-        $targetPerTypePerUser = 12; // 12 × 5 user = 60 per type
+        $targetPerTypePerUser = 12;
 
         foreach ($users as $user) {
             foreach (['want', 'need', 'saving', 'investment'] as $type) {

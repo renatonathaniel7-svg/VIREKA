@@ -5,15 +5,6 @@ namespace Database\Seeders;
 use App\Models\Badge;
 use Illuminate\Database\Seeder;
 
-/**
- * Seeder: BadgeSeeder
- *
- * Master data badge — seed pertama karena tidak ada dependency.
- * Data ini statis, diidentifikasi via badge_key (bukan ID numerik).
- *
- * Gunakan updateOrCreate agar seeder bisa dijalankan ulang
- * tanpa duplicate key error.
- */
 class BadgeSeeder extends Seeder
 {
     public function run(): void

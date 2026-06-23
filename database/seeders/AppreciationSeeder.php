@@ -7,19 +7,6 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
-/**
- * Seeder: AppreciationSeeder
- *
- * Min 30 rows behavioral feedback logs.
- * Mensimulasikan history interaksi sistem dengan user
- * selama 2 bulan terakhir.
- *
- * Mix tipe log:
- * - daily_warning & daily_appreciation (paling banyak)
- * - streak_badge (saat milestone)
- * - monthly_summary (2x per user = 2 bulan)
- * - income_growth (occasional)
- */
 class AppreciationSeeder extends Seeder
 {
     public function run(): void

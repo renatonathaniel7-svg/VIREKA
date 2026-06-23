@@ -6,7 +6,7 @@
 @section('title', 'Hasil Verifikasi')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-8 px-4">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
 
     <div class="max-w-3xl mx-auto">
 
@@ -24,7 +24,7 @@
         @endforeach
 
         {{-- ── Header + Badge Besar ────────────────────────────────────── --}}
-        <div class="mb-6 flex items-start justify-between">
+        <div class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-3">
             <div>
                 <a href="{{ $verification->reference_type === 'expense'
                     ? route('expenses.show', $verification->reference_id)
@@ -35,13 +35,13 @@
                     </svg>
                     Kembali ke Detail Transaksi
                 </a>
-                <h1 class="text-2xl font-bold text-gray-900">Hasil Verifikasi</h1>
-                <p class="text-gray-400 text-sm mt-1">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Hasil Verifikasi</h1>
+                <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">
                     ID Verifikasi #{{ $verification->id }} —
                     {{ \Carbon\Carbon::parse($verification->created_at)->isoFormat('D MMMM YYYY, HH:mm') }}
                 </p>
             </div>
-            <div class="mt-8">
+            <div class="flex-shrink-0 ml-6">
                 @include('verifications._status_badge', [
                     'status' => $verification->status,
                     'size'   => 'lg',
@@ -51,13 +51,13 @@
 
         {{-- ── Status Result Box ───────────────────────────────────────── --}}
         @if($verification->status === 'verified')
-        <div class="bg-green-50 border border-green-200 rounded-xl p-5 mb-6 flex items-start gap-3">
+        <div class="bg-green-800 border border-green-200 dark:border-green-950/60 rounded-xl p-5 mb-6 flex items-start gap-3">
             <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
             <div>
-                <p class="text-green-800 font-semibold">Transaksi Berhasil Diverifikasi</p>
-                <p class="text-green-700 text-sm mt-1">
+                <p class="text-green-800 dark:text-green-300 font-semibold">Transaksi Berhasil Diverifikasi</p>
+                <p class="text-green-700 dark:text-green-400 text-sm mt-1">
                     Data yang kamu input sesuai dengan screenshot yang diupload.
                     Transaksi ini sudah masuk ke verified balance dan diperhitungkan dalam Financial Health Score.
                 </p>
@@ -97,7 +97,7 @@
         </div>
 
         @elseif($verification->status === 'pending')
-        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-6 flex items-start gap-3">
+        <div class="bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 rounded-xl p-5 mb-6 flex items-start gap-3">
             <svg class="w-6 h-6 text-blue-500 flex-shrink-0 mt-0.5 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 12 0 12 0v4a8 8 0 00-8 8H4z"></path>
@@ -164,8 +164,8 @@
 
         {{-- ── Perbandingan Data: Input User vs AI ─────────────────────── --}}
         @if($aiData)
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
-            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Perbandingan Data</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-6">
+            <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">Perbandingan Data</h2>
 
             <div class="grid grid-cols-2 gap-6">
                 {{-- Kolom Kiri: Data Input User --}}
@@ -267,7 +267,7 @@
 
         {{-- ── Screenshot Preview ──────────────────────────────────────── --}}
         @if($verification->screenshot_path)
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-6">
             <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Screenshot yang Diupload</h2>
             @php
                 $screenshotUrl = '/' . ltrim($verification->screenshot_path, '/');
@@ -276,7 +276,7 @@
             @if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
             <img src="{{ $screenshotUrl }}"
                  alt="Screenshot verifikasi"
-                 class="max-w-full h-auto rounded-lg border border-gray-200 max-h-80 object-contain mx-auto block">
+                 class="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-700 max-h-80 object-contain mx-auto block">
             @else
             <a href="{{ $screenshotUrl }}" target="_blank"
                class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 text-sm">

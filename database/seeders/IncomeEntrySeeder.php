@@ -8,18 +8,6 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
-/**
- * Seeder: IncomeEntrySeeder
- *
- * Min 50 rows income tersebar dalam 3 bulan terakhir.
- * Mix status ~70% verified, 30% unverified/pending.
- * Nominal realistis Indonesia: 500.000 - 8.000.000 per entri.
- *
- * POLA YANG DISIMULASIKAN:
- * - Setiap user mendapat 1-2 income utama per bulan (gaji)
- * - Plus beberapa income tambahan (freelance, bonus)
- * - Tersebar di 3 bulan terakhir
- */
 class IncomeEntrySeeder extends Seeder
 {
     public function run(): void

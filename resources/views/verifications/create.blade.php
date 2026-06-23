@@ -11,21 +11,21 @@
 @endpush
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-8 px-4" x-data="verificationForm()">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4" x-data="verificationForm()">
 
     <div class="max-w-2xl mx-auto">
 
         {{-- ── Header ─────────────────────────────────────────────────── --}}
         <div class="mb-6">
             <a href="{{ $type === 'expense' ? route('expenses.show', $transaction->id) : route('income.show', $transaction->id) }}"
-               class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-3">
+               class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-3"
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
                 Kembali ke Detail Transaksi
             </a>
-            <h1 class="text-2xl font-bold text-gray-900">Verifikasi Transaksi</h1>
-            <p class="text-gray-500 text-sm mt-1">Upload bukti screenshot mutasi atau saldo rekening</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Verifikasi Transaksi</h1>
+            <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm mt-1">Upload bukti screenshot mutasi atau saldo rekening</p>
         </div>
 
         {{-- ── Info Box Kuning (toleransi & batasan sistem) ───────────── --}}
@@ -49,42 +49,42 @@
         </div>
 
         {{-- ── Detail Transaksi yang Akan Diverifikasi ─────────────────── --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
-            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Detail Transaksi</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+            <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">Detail Transaksi</h2>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <p class="text-xs text-gray-400">Tipe</p>
-                    <p class="text-sm font-medium text-gray-900">
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Tipe</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
                         {{ $type === 'expense' ? 'Pengeluaran' : 'Pendapatan' }}
                     </p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400">Status Saat Ini</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Status Saat Ini</p>
                     @include('verifications._status_badge', ['status' => $transaction->verified_status ?? 'draft'])
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400">Nominal</p>
-                    <p class="text-lg font-bold text-gray-900">
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Nominal</p>
+                    <p class="text-lg font-bold text-gray-900 dark:text-white">
                         Rp {{ number_format($transaction->amount, 0, ',', '.') }}
                     </p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400">Tanggal</p>
-                    <p class="text-sm font-medium text-gray-900">
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Tanggal</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
                         {{ \Carbon\Carbon::parse($transaction->date)->isoFormat('D MMMM YYYY') }}
                     </p>
                 </div>
                 @if($type === 'expense' && isset($transaction->category))
                 <div>
-                    <p class="text-xs text-gray-400">Kategori</p>
-                    <p class="text-sm font-medium text-gray-900">{{ $transaction->category->name ?? '-' }}</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Kategori</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $transaction->category->name ?? '-' }}</p>
                 </div>
                 @endif
                 @if(isset($transaction->description) && $transaction->description)
                 <div class="col-span-2">
-                    <p class="text-xs text-gray-400">Deskripsi</p>
-                    <p class="text-sm text-gray-700">{{ $transaction->description }}</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Deskripsi</p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300">{{ $transaction->description }}</p>
                 </div>
                 @endif
             </div>
@@ -103,7 +103,7 @@
         @endif
 
         {{-- ── Form Upload ─────────────────────────────────────────────── --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-4">
             <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Upload Bukti Transaksi</h2>
 
             <form action="{{ route('verifications.store', [$type, $transaction->id]) }}"
@@ -114,7 +114,7 @@
 
                 {{-- FilePond drop area --}}
                 <div class="mb-5">
-                    <label for="screenshot" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="screenshot" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Screenshot Mutasi / Saldo Rekening
                     </label>
 
@@ -125,16 +125,16 @@
                            accept=".jpg,.jpeg,.png,.pdf"
                            class="filepond"
                            data-max-file-size="5MB"
-                           data-label-idle='<span class="text-gray-400">
+                           data-label-idle='<span class="text-gray-400 dark:text-gray-500">
                                <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                </svg>
                                <span class="font-medium text-indigo-600">Klik untuk pilih file</span>
                                atau drag &amp; drop di sini
                            </span>
-                           <span class="block text-xs text-gray-400 mt-1">JPG, PNG, atau PDF — Maks. 5MB</span>'>
+                           <span class="block text-xs text-gray-400 dark:text-gray-500 mt-1">JPG, PNG, atau PDF — Maks. 5MB</span>'>
 
-                    <p class="text-xs text-gray-400 mt-2">
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
                         💡 Tips: Pastikan screenshot menunjukkan nominal, tanggal, dan nama bank dengan jelas.
                     </p>
                 </div>
@@ -164,12 +164,12 @@
 
         {{-- ── Link Cash (tidak ada bukti) ──────────────────────────────── --}}
         <div class="text-center">
-            <p class="text-sm text-gray-400 mb-2">Tidak memiliki bukti digital?</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mb-2">Tidak memiliki bukti digital?</p>
             <form action="{{ route('verifications.cash', [$type, $transaction->id]) }}" method="POST" class="inline">
                 @csrf
                 <button type="submit"
                         onclick="return confirm('Tandai sebagai transaksi tunai? Transaksi ini akan masuk ke shadow balance dan tidak mempengaruhi Financial Health Score.')"
-                        class="text-sm text-gray-500 hover:text-gray-700 underline">
+                        class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-300 underline">
                     Tandai sebagai Transaksi Tunai (tidak ada bukti)
                 </button>
             </form>
@@ -193,14 +193,14 @@
             maxFileSize: '5MB',
             acceptedFileTypes: ['image/jpeg', 'image/png', 'application/pdf'],
             labelIdle: `
-                <span class="text-gray-400">
+                <span class="text-gray-400 dark:text-gray-500">
                     <svg class="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                               d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                     <span class="font-medium text-indigo-600">Klik untuk pilih file</span> atau drag & drop
                 </span>
-                <span class="block text-xs text-gray-400 mt-1">JPG, PNG, atau PDF — Maks. 5MB</span>
+                <span class="block text-xs text-gray-400 dark:text-gray-500 mt-1">JPG, PNG, atau PDF — Maks. 5MB</span>
             `,
         });
 
@@ -215,4 +215,19 @@
             }
         }
     </script>
+
+    <style>
+.dark .filepond--root {
+    color: #e5e7eb;
+}
+
+.dark .filepond--panel-root {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151 !important;
+}
+
+.dark .filepond--drop-label {
+    color: #d1d5db !important;
+}
+</style>
 @endpush

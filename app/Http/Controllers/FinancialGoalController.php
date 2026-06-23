@@ -18,7 +18,29 @@ class FinancialGoalController extends Controller
             ->latest()
             ->get();
 
-        return view('goals.index', compact('goals'));
+        $totalGoals = $goals->count();
+
+        $totalCollected = $goals->sum('collected_amount');
+
+        $averageProgress = $goals->count()
+            ? round(
+                $goals->avg(function ($goal) {
+                    return $goal->target_amount > 0
+                        ? ($goal->collected_amount / $goal->target_amount) * 100
+                        : 0;
+                })
+            )
+            : 0;
+
+        return view(
+            'goals.index',
+            compact(
+                'goals',
+                'totalGoals',
+                'totalCollected',
+                'averageProgress'
+            )
+        );
     }
 
     public function create()
@@ -41,8 +63,9 @@ class FinancialGoalController extends Controller
             'target_date' => $request->target_date,
         ]);
 
-        return redirect()->back()
-            ->with('success', 'Goal berhasil dibuat');
+        return redirect()
+    ->route('goals.index')
+    ->with('success', 'Goal berhasil dibuat');
     }
 
 public function showContributionForm(FinancialGoal $goal)

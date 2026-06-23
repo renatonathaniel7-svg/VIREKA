@@ -119,7 +119,7 @@
             <a href="{{ route('budgets.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
                       {{ request()->routeIs('budgets.*') ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100' }}">
-                <span class="text-base">🎯</span>
+                <span class="text-base">🐷</span>
                 Budget
             </a>
 
@@ -131,15 +131,13 @@
                 Investasi
             </a>
 
-            <li>
-                <a href="{{ route('goals.index') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100">
-
-                    <span>🎯</span>
-
-                    <span>Goals</span>
-                </a>
-            </li>
+            {{-- Goals --}}
+            <a href="{{ route('goals.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
+                    {{ request()->routeIs('goals.*') ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100' }}">
+                <span class="text-base">🎯</span>
+                Goals
+            </a>
 
             {{-- Divider --}}
             <div class="pt-3 pb-1">
@@ -226,8 +224,8 @@
             </button>
 
             {{-- Page title --}}
-            <h1 class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex-1 truncate">
-                @yield('page-title', 'Vireka')
+            <h1 class="text-sm font-medium text-gray-500 dark:text-gray-400 flex-1 truncate">
+                📅 {{ now()->locale('id')->translatedFormat('l, d F Y') }}
             </h1>
 
             {{-- Right side controls --}}
@@ -266,7 +264,7 @@
         </header>
 
         {{-- ── PAGE CONTENT ── --}}
-        <main class="flex-1 overflow-y-auto">
+        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-[#0B1120] transition-colors duration-300">
             @yield('content')
         </main>
 
