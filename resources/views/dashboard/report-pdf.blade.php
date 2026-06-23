@@ -1,159 +1,56 @@
-{{-- =========================================================
-     View: dashboard/report.blade.php
-     Controller: DashboardController@report
-     
-     Fitur Laporan Bulanan — wajib untuk TA.
-     Filter bulan/tahun via GET parameter.
-     Dilengkapi print CSS: sidebar & tombol disembunyikan saat cetak.
-     Bar chart pengeluaran harian via Chart.js.
-     ========================================================= --}}
-
-@extends('layouts.app')
-
-@section('title', 'Laporan Bulanan — Vireka')
 
 @push('head')
 <style>
-    @media print {
-        @page {
-            size: A4 portrait;
-            margin: 10mm;
-        }
-        #chart-report-daily {
-            max-height: 300px !important;}
-        /* Sembunyikan navigasi, sidebar, tombol saat cetak */
-        nav, aside, .no-print, .fintrack-sidebar,
-        header, footer, .print-hide {
-            display: none !important;
-        }
-        body {
-            background: white !important;
-            font-size: 12px;
-        }
-        .fintrack-card {
-            border: 1px solid #e5e7eb !important;
-            box-shadow: none !important;
-            page-break-inside: auto;
-            break-inside: auto;
-        }
-        .print-full {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        table {
-        width: 100%;
-        page-break-inside: auto;
+    @page {
+        size: A4 portrait;
+        margin: 15mm;
     }
 
-    tr {
-        page-break-inside: avoid;
+    body {
+        font-family: DejaVu Sans, sans-serif;
+        font-size: 11px;
+        color: #111827;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #d1d5db;
+        padding: 6px;
     }
 
     thead {
         display: table-header-group;
     }
 
-    tfoot {
-        display: table-footer-group;
-    }
-        canvas { max-width: 100% !important; }
-    }
-        html,
-    body {
-        width: 100%;
-        height: auto;
-        overflow: visible !important;
+    tr {
+        page-break-inside: avoid;
     }
 
-    .overflow-x-auto {
-        overflow: visible !important;
+    .section {
+        margin-bottom: 20px;
     }
 
-    .relative {
-        overflow: visible !important;
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
     }
+    @page {
+    margin: 15mm;}
 </style>
 @endpush
-
-@section('content')
-
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+<body>
+    <div class="container">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 print-full space-y-6">
-
-        {{-- ─────────────────────────────────────────────────────── --}}
-        {{-- HEADER + FILTER --}}
-        {{-- ─────────────────────────────────────────────────────── --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print-hide">
-            <div>
-                <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-                    Laporan Bulanan
-                </h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    {{ $report['month_name'] }} — {{ auth()->user()->name }}
-                </p>
-            </div>
-
-            <div class="flex items-center gap-3 flex-wrap">
-                {{-- Filter bulan/tahun --}}
-                <form method="GET" action="{{ route('dashboard.report') }}"
-                      class="flex items-center gap-2">
-                    <select name="month"
-                            class="text-sm rounded-lg border border-gray-200 dark:border-gray-700
-                                   bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200
-                                   px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        @for($m = 1; $m <= 12; $m++)
-                            <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::createFromDate(null, $m, 1)->translatedFormat('F') }}
-                            </option>
-                        @endfor
-                    </select>
-                    <select name="year"
-                            class="text-sm rounded-lg border border-gray-200 dark:border-gray-700
-                                   bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200
-                                   px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        @for($y = now()->year; $y >= 2020; $y--)
-                            <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endfor
-                    </select>
-                    <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white
-                                   text-sm font-semibold rounded-lg transition-colors">
-                        Tampilkan
-                    </button>
-                </form>
-
-                {{-- Print button --}}
-                <a href="{{ route('dashboard.report.pdf', [
-                    'month' => $month,
-                    'year'  => $year
-                ]) }}"
-                class="no-print inline-flex items-center gap-1.5 px-4 py-2
-                        bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                        text-gray-700 dark:text-gray-200 text-sm font-semibold rounded-lg
-                        hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
-
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                    </svg>
-                    Download PDF
-                </a>
-
-                <a href="{{ route('dashboard') }}"
-                   class="no-print inline-flex items-center gap-1.5 px-3 py-2 text-sm text-gray-500
-                          hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
-                    ← Dashboard
-                </a>
-            </div>
-        </div>
-
-        {{-- Print header (hanya muncul saat print) --}}
-        <div class="hidden print:block text-center mb-6 border-b pb-4">
-            <h1 class="text-xl font-bold">Vireka — Laporan Bulanan</h1>
-            <p class="text-sm text-gray-600">{{ $report['month_name'] }} | {{ auth()->user()->name }}</p>
-        </div>
+        <div class="title">
+    <h2>Vireka — Laporan Bulanan</h2>
+    <p>{{ $report['month_name'] }}</p>
+    <p>{{ auth()->user()->name }}</p>
+    </div>
 
         {{-- ─────────────────────────────────────────────────────── --}}
         {{-- SECTION 1: RINGKASAN FINANSIAL --}}
@@ -463,26 +360,6 @@
             </p>
         </div>
 
-        {{-- ─────────────────────────────────────────────────────── --}}
-        {{-- SECTION 5: GRAFIK TREN HARIAN (Bar Chart) --}}
-        {{-- ─────────────────────────────────────────────────────── --}}
-        <div class="fintrack-card p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <h2 class="text-base font-bold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
-                <span class="text-indigo-500">05</span>
-                Tren Harian Pengeluaran — {{ $report['month_name'] }}
-            </h2>
-
-            @if(array_sum($report['daily_data']) == 0)
-                <p class="text-sm text-gray-400 dark:text-gray-500 py-4 text-center">
-                    Tidak ada data pengeluaran harian bulan ini.
-                </p>
-            @else
-                <div class="relative h-64">
-                    <canvas id="chart-report-daily"></canvas>
-                </div>
-            @endif
-        </div>
-
         {{-- Footer laporan --}}
         <div class="text-center py-4">
             <p class="text-xs text-gray-400 dark:text-gray-600">
@@ -490,81 +367,8 @@
                 | Hanya mencakup transaksi dengan status <em>verified</em>
             </p>
         </div>
-
+        <div style="position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 10px;">
+    Halaman <span class="pagenum"></span>
+</div>
     </div>{{-- /container --}}
 </div>
-
-@endsection
-
-@push('scripts')
-<script>
-(function() {
-    const ctx = document.getElementById('chart-report-daily');
-    if (!ctx) return;
-
-    const isDark      = document.documentElement.classList.contains('dark');
-    const gridColor   = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
-    const tickColor   = isDark ? '#9ca3af' : '#6b7280';
-
-    function formatRupiah(val) {
-        return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
-    }
-    function formatRupiahShort(val) {
-        if (Math.abs(val) >= 1_000_000_000) return (val / 1_000_000_000).toFixed(1) + ' M';
-        if (Math.abs(val) >= 1_000_000)     return (val / 1_000_000).toFixed(1) + ' Jt';
-        if (Math.abs(val) >= 1_000)         return Math.round(val / 1_000) + ' Rb';
-        return val.toString();
-    }
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: @json($report['daily_labels']),
-            datasets: [{
-                label: 'Pengeluaran',
-                data: @json($report['daily_data']),
-                backgroundColor: 'rgba(99, 102, 241, 0.75)',
-                borderColor: 'rgba(99, 102, 241, 1)',
-                borderWidth: 1,
-                borderRadius: 4,
-                borderSkipped: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        title: (ctx) => `Tanggal ${ctx[0].label}`,
-                        label: (ctx) => ` Pengeluaran: ${formatRupiah(ctx.parsed.y)}`,
-                    },
-                    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                    titleColor: isDark ? '#f9fafb' : '#111827',
-                    bodyColor: isDark ? '#d1d5db' : '#374151',
-                    borderColor: isDark ? '#374151' : '#e5e7eb',
-                    borderWidth: 1,
-                    padding: 10,
-                }
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: { color: tickColor, font: { size: 10 } }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: { color: gridColor },
-                    ticks: {
-                        color: tickColor,
-                        font: { size: 10 },
-                        callback: (v) => formatRupiahShort(v)
-                    }
-                }
-            }
-        }
-    });
-})();
-</script>
-@endpush

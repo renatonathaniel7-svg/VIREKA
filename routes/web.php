@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     // Dashboard & Laporan
     Route::get('/dashboard',        [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/report', [DashboardController::class, 'report'])->name('dashboard.report');
+    Route::get('/dashboard/report/pdf', [DashboardController::class, 'exportPdf'])->name('dashboard.report.pdf');
 
     // Expenses
     Route::get('/expenses',             [ExpenseController::class, 'index'])->name('expenses.index');

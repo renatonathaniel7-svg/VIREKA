@@ -7,6 +7,7 @@ use App\Services\DashboardService;
 use App\Services\SurviveModeService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -91,14 +92,28 @@ $topGoals = $this->dashboardService->getTopGoals($user);
         ));
     }
 
-    public function showContributionForm(FinancialGoal $goal)
+    public function exportPdf(Request $request)
 {
-    $balance = $this->dashboardService
-        ->getAvailableBalance(auth()->user());
+    $user = auth()->user();
 
-    return view(
-        'goals.contribute',
-        compact('goal', 'balance')
+    $month = (int) $request->get('month', now()->month);
+    $year  = (int) $request->get('year', now()->year);
+
+    $report = $this->dashboardService->getReportData(
+        $user,
+        $month,
+        $year
+    );
+
+    $pdf = Pdf::loadView(
+        'dashboard.report-pdf',
+        compact('report', 'month', 'year')
+    );
+
+    $pdf->setPaper('a4', 'portrait');
+
+    return $pdf->download(
+        "Laporan-{$month}-{$year}.pdf"
     );
 }
 }
